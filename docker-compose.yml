@@ -13,11 +13,11 @@ services:
 
   api:
     build:
-      context: ./<DJANGO_APP>
+      context: ./search_api
       dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./<DJANGOA_APP>:/code
+      - ./search_api:/code
     ports:
       - "8000:8000"
     depends_on:
