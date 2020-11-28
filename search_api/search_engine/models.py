@@ -8,6 +8,9 @@ class Query(models.Model):
     total_result = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'{self.name} found {self.created}'
+
 
 class Item(models.Model):
     position = models.IntegerField(blank=False)
@@ -16,3 +19,6 @@ class Item(models.Model):
     desc = models.TextField()
     query = models.ForeignKey(
         Query, on_delete=models.CASCADE, related_name='items')
+
+    def __str__(self):
+        return f'[{self.position}] {self.title}'

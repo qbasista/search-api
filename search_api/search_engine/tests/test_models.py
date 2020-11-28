@@ -34,9 +34,14 @@ class QueryTest(TestCase):
             desc=DESC
         )
 
+        print(q.created)
+
         self.assertIsInstance(q, Query)
         self.assertIsInstance(item1, Item)
         self.assertIsInstance(item2, Item)
         self.assertEqual(q.name, name)
         self.assertEqual(q.total_result, total_result)
         self.assertEqual(len(q.items.all()), 2)
+        self.assertTrue(hasattr(q, 'created'))
+        self.assertEqual(str(q), f'{name} found {q.created}')
+        self.assertEqual(str(item1), f'[1] some title')
