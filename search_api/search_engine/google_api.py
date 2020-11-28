@@ -1,4 +1,5 @@
 from googleapiclient.discovery import build
+from .models import Query
 # from search_api.settings import env
 
 # GOOGLE_API_KEY = env('GOOGLE_API_KEY')
@@ -24,3 +25,26 @@ class GoogleService:
             return self.service.cse().list(q=query, cx=self.cse_id).execute()
         except GoogleServiceError as e:
             raise GoogleServiceError('Can\'t search in Google') from e
+
+    def save_query(self, res, query):
+        try:
+            total_result = int(res["searchInformation"]['totalResults'])
+
+            query = Query(
+                name=query,
+                total_result=total_result
+            )
+            query.save()
+
+            if total_result and hasattr(res, 'items'):
+
+                for num, item in enumerate(res['items'], start=1):
+                    query.items.create(
+                        position=num,
+                        link=item['link'],
+                        title=item['title'],
+                        desc=item['snippet'],
+                    )
+            return query
+        except Exception as e:
+            raise GoogleServiceError('Can\'t save query to database') from e
