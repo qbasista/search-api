@@ -24,7 +24,7 @@ class SearchView(View):
         result = []
 
         if not query:
-            return HttpResponse('Bad request, not found query', 400)
+            return HttpResponse('Bad request, not found query', status=400)
 
         result = Query.objects.filter(
             name=query, created__gte=expiration_date, client_ip=ip).order_by('-created').first()
@@ -39,7 +39,7 @@ class SearchView(View):
                 result = g_api.save_query(res, query, ip)
 
             except Exception as e:
-                return HttpResponse(f'Google service is not available - {e}', 404)
+                return HttpResponse(f'Google service is not available - {e}', status=404)
 
         serialized_query = serialize('python', [result])
         serialized_items = serialize('python', result.items.all())
