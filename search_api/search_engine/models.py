@@ -8,18 +8,19 @@ import re
 
 class Query(models.Model):
     name = models.CharField(max_length=128, blank=False)
-    total_result = models.IntegerField(default=0)
+    total_result = models.BigIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
+    client_ip = models.GenericIPAddressField()
 
     def __str__(self):
         return f'{self.name} found {self.created}'
 
     def get_popular_words(self):
-        all_word_by_item = [item['title'].split(
-            ' ') + item['desc'].split(' ') for item in self.items.all().values('title', 'desc')]
+        all_words = reduce((lambda a, b: a + b), [item['title'].split(
+            ' ') + item['desc'].split(' ') for item in self.items.all().values('title', 'desc')])
 
         words_count = dict(Counter(filter(None, map(lambda word: re.sub(
-            '[^A-Za-z0-9]+', '', word), reduce((lambda a, b: a + b), all_word_by_item)))))
+            '[^A-Za-z0-9]+', '', word.lower()), all_words))))
 
         return sorted(words_count, key=words_count.get, reverse=True)[:10]
 

@@ -1,9 +1,6 @@
 from googleapiclient.discovery import build
 from .models import Query
-# from search_api.settings import env
-
-# GOOGLE_API_KEY = env('GOOGLE_API_KEY')
-# GOOGLE_CSE_ID = env('GOOGLE_CSE_ID')
+from .helpers import get_client_ip
 
 
 class GoogleServiceError(Exception):
@@ -26,13 +23,14 @@ class GoogleService:
         except GoogleServiceError as e:
             raise GoogleServiceError('Can\'t search in Google') from e
 
-    def save_query(self, res, query):
+    def save_query(self, res, query, ip):
         try:
             total_result = int(res["searchInformation"]['totalResults'])
 
             query = Query(
                 name=query,
-                total_result=total_result
+                total_result=total_result,
+                client_ip=ip
             )
             query.save()
 
