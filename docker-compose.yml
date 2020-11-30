@@ -26,17 +26,17 @@ services:
       - backend
       - frontend
 
-  #   app-frontend:
-  #     build:
-  #       context: ./<FRONTEND_APP>
-  #       dockerfile: Dockerfile
-  #     ports:
-  #       - "9090:80"
-  #     restart: always
-  #     depends_on:
-  #       - api
-  #     networks:
-  #       - frontend
+  app-frontend:
+    build:
+      context: ./search-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "9090:80"
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - frontend
 
   adminer:
     image: adminer
